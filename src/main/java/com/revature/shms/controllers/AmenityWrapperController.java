@@ -14,7 +14,6 @@ import java.util.List;
 @RestController()
 @RequestMapping(value = "/amenities")
 public class AmenityWrapperController {
-
 	@Autowired
 	private AmenityWrapperService service;
 

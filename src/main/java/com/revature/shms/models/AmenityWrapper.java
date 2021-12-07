@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class AmenityWrapper {
-
 	@Id
 	@Enumerated
 	@Column(unique = true,nullable = false)

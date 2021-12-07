@@ -1,7 +1,6 @@
 package com.revature.shms.models;
 
-import com.revature.shms.enums.Amenities;
-import com.revature.shms.enums.CleaningStatus;
+import com.revature.shms.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +31,7 @@ public class Room {
 	@Column(nullable = false)
 	boolean isOccupied;
 	@Column(nullable = false)
-	boolean needsService;
+	WorkStatus workStatus;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	List<AmenityWrapper> amenitiesList;

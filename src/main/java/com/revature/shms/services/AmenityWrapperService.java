@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -20,14 +22,14 @@ import java.util.List;
 @Setter
 public class AmenityWrapperService {
 	@Autowired
-	private AmenityWrapperRepository repo;
+	private AmenityWrapperRepository amenityWrapperRepository;
 
 	/**
 	 * gets all amenityWrappers
 	 * @return List<AmenityWrapper>
 	 */
-	public List<AmenityWrapper> getAllAmenities(){
-		return repo.findAll();
+	public Page<AmenityWrapper> findAllAmenities(Pageable pageable){
+		return amenityWrapperRepository.findAll(pageable);
 	}
 
 	/**
@@ -37,7 +39,7 @@ public class AmenityWrapperService {
 	 * @return the amenityWrapper
 	 */
 	public AmenityWrapper setAmenityPrice(Amenities amenity, double price){
-		return repo.save(new AmenityWrapper(amenity,price));
+		return amenityWrapperRepository.save(new AmenityWrapper(amenity, price));
 	}
 
 	/**
@@ -46,7 +48,7 @@ public class AmenityWrapperService {
 	 * @return AmenityWrapper
 	 */
 	public AmenityWrapper getAmenityWrapper(Amenities amenity){
-		return repo.getById(amenity);
+		return amenityWrapperRepository.getById(amenity);
 	}
 
 	/**
@@ -55,7 +57,7 @@ public class AmenityWrapperService {
 	 * @return double price
 	 */
 	public Double getAmenityPrice(Amenities amenity) {
-		return repo.getById(amenity).getPriceWeight();
+		return amenityWrapperRepository.getById(amenity).getPriceWeight();
 	}
 
 	/**
@@ -66,10 +68,11 @@ public class AmenityWrapperService {
 	public Double getTotal(List<AmenityWrapper> wrappers){
 		return wrappers.stream().mapToDouble(AmenityWrapper::getPriceWeight).sum();
 	}
+
 	/**
 	 * Generates all AmenityWrappers with 0 price
 	 */
 	public void GenerateAllAmenityWrappers(){
-		Arrays.stream(Amenities.values()).forEach(amenities -> repo.save(new AmenityWrapper(amenities,0)));
+		Arrays.stream(Amenities.values()).forEach(amenities -> amenityWrapperRepository.save(new AmenityWrapper(amenities,0)));
 	}
 }

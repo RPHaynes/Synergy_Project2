@@ -1,8 +1,6 @@
 package com.revature.shms.models;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -15,17 +13,18 @@ import java.util.List;
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	int userId;
+	int userID;
 
 	String firstName;
 	String lastName;
 
 	@Column(nullable = false, unique = true)
-	String userName;
+	String username;
 	@Column(nullable = false)
 	String password;
 
-  @OneToMany(mappedBy = "userReserve")
-  @JsonManagedReference
-  private List<Reservation> reservations;
+
+  	@OneToMany(mappedBy = "userReserve")
+	@JsonManagedReference
+	private List<Reservation> reservations;
 }
