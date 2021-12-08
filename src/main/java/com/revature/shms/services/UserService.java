@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Setter
 @AllArgsConstructor
 public class UserService{
-    
     @Autowired
     private UserRepository userRepository;
 
@@ -48,15 +47,6 @@ public class UserService{
 		} catch (NotFound e) { throw new AccessDeniedException("Incorrect username/password");}
 		throw new AccessDeniedException("Incorrect username/password");
 	}
-
-    /**
-     * Logs out the user and redirect them to the logout page.
-     * @return String that redirects the user to the logout page.
-     */
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String logout(){
-        return "redirect:logoutPage";
-    }
 
     /**
      * Gets a list of all users.
@@ -112,6 +102,12 @@ public class UserService{
         }
     }
 
+    /**
+     *
+     * @param userID
+     * @param firstName
+     * @return
+     */
     public boolean updateFirstName(int userID, String firstName){
         User user = userRepository.findByUserID(userID).orElse(null);
         if(user != null){
@@ -124,6 +120,12 @@ public class UserService{
         }
     }
 
+    /**
+     *
+     * @param userID
+     * @param lastName
+     * @return
+     */
     public boolean updateLastName(int userID, String lastName){
         User user = userRepository.findByUserID(userID).orElse(null);
         if(user != null){

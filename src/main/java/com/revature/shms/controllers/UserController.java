@@ -27,4 +27,13 @@ public class UserController {
     public ResponseEntity<?> createNewUser(@RequestBody User user) {
 		return ResponseEntity.ok( userService.createNewUser(user));
     }
+
+    /**
+     * Logs out the user and redirect them to the logout page.
+     * @return String that redirects the user to the logout page.
+     */
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout(){
+        return "redirect:logoutPage";
+    }
 }

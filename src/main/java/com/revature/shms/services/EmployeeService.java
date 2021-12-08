@@ -58,6 +58,7 @@ public class EmployeeService {
 
 	/**
 	 * List of All Employees ordered by Employee Type.
+	 * @param pageable
 	 * @return List<Employee> of All employees.
 	 */
 	public Page<Employee> findAllEmployees(Pageable pageable){
@@ -67,6 +68,7 @@ public class EmployeeService {
 	/**
 	 * List of All Employees with the given Employee Type.
 	 * @param employeeType the employeeType to be matched.
+	 * @param pageable
 	 * @return List<Employee> of All employees with the given employeeType.
 	 */
 	public Page<Employee> findAllEmployeesByType(EmployeeType employeeType, Pageable pageable){
@@ -77,6 +79,7 @@ public class EmployeeService {
 	 * Gets the Employee with the matching employeeID.
 	 * @param employeeID the employeeID to match.
 	 * @return Employee with the given employeeID.
+	 * @throws NotFound
 	 */
 	public Employee findEmployeeByID(int employeeID) throws NotFound {
 		return employeeRepository.findByEmployeeID(employeeID).orElseThrow(NotFound::new);
@@ -86,6 +89,7 @@ public class EmployeeService {
 	 * Gets the Employee with the matching userName.
 	 * @param userName the username to match.
 	 * @return Employee with the given username.
+	 * @throws NotFound
 	 */
 	public Employee findEmployeeByUserName(String userName) throws NotFound {
 		return employeeRepository.findByUsername(userName).orElseThrow(NotFound::new);
@@ -117,6 +121,12 @@ public class EmployeeService {
 		}
 	}
 
+	/**
+	 *
+	 * @param employeeID
+	 * @param firstName
+	 * @return
+	 */
 	public boolean updateFirstName(int employeeID, String firstName){
 		Employee employee = employeeRepository.findByEmployeeID(employeeID).orElse(null);
 		if(employee != null){
@@ -128,6 +138,12 @@ public class EmployeeService {
 		}
 	}
 
+	/**
+	 *
+	 * @param employeeID
+	 * @param lastName
+	 * @return
+	 */
 	public boolean updateLastName(int employeeID, String lastName){
 		Employee employee = employeeRepository.findByEmployeeID(employeeID).orElse(null);
 		if(employee != null){

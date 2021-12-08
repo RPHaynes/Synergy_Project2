@@ -16,7 +16,6 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
-
 	@Autowired
 	EmployeeRepository employeeRepository;
 

@@ -28,6 +28,7 @@ public class  ReservationService {
      * Get a reservation with a userId
      * @param userID
      * @return Reservation
+     * @throws NotFound
      */
     public Reservation findReservationByUserID(int userID) throws NotFound {
         return reservationRepository.findByUserReserve_UserID(userID).orElseThrow(NotFound::new);
@@ -37,6 +38,7 @@ public class  ReservationService {
      * Get a reservation with a reservation Id
      * @param reservationId
      * @return Reservation
+     * @throws NotFound
      */
     public Reservation findReservationByReservationID(int reservationId) throws NotFound {
         return reservationRepository.findByReservationID(reservationId).orElseThrow(NotFound::new);
@@ -52,6 +54,7 @@ public class  ReservationService {
 
     /**
      * This creates or saves a reservation
+     * @param reservation
      * @return Reservation.
      */
     public Reservation createReservation(Reservation reservation){
@@ -60,6 +63,7 @@ public class  ReservationService {
 
     /**
      * This deletes a reservation by a userId
+     * @param userID
      */
     public void deleteReservationByUserID(int userID) {
 		reservationRepository.deleteByUserReserve_UserID(userID);
@@ -67,6 +71,10 @@ public class  ReservationService {
 
     /**
      * This toggles the reservation status for employees or users that cancel a reservation
+     * @param reservationID
+     * @param status
+     * @return
+     * @throws NotFound
      */
     public Reservation changeStatusOfReservation(int reservationID, ReservationStatus status) throws NotFound {
         Reservation reservation = findReservationByReservationID(reservationID);
@@ -79,6 +87,7 @@ public class  ReservationService {
      * @param reservationID the given reservationID.
      * @param accommodations the accommodations that are being added or changed to.
      * @return a Reservation with the given accommodations.
+     * @throws NotFound
      */
     public Reservation setAccommodations(int reservationID, String accommodations) throws NotFound {
         Reservation reservation = findReservationByReservationID(reservationID);
@@ -88,6 +97,11 @@ public class  ReservationService {
 
     /**
      * This toggles the date
+     * @param reservationID
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws NotFound
      */
     public Reservation changeDateOfReservation(int reservationID, String startDate, String endDate) throws NotFound {
         Reservation reservation = findReservationByReservationID(reservationID);
@@ -96,6 +110,11 @@ public class  ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    /**
+     *
+     * @param reservation
+     * @return
+     */
     public Reservation setReservation(Reservation reservation){
         reservation.setStatus(ReservationStatus.PENDING);
         return reservationRepository.save(reservation);

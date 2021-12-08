@@ -25,7 +25,8 @@ public class AmenityWrapperService {
 	private AmenityWrapperRepository amenityWrapperRepository;
 
 	/**
-	 * gets all amenityWrappers
+	 * Gets all amenityWrappers
+	 * @param pageable
 	 * @return List<AmenityWrapper>
 	 */
 	public Page<AmenityWrapper> findAllAmenities(Pageable pageable){

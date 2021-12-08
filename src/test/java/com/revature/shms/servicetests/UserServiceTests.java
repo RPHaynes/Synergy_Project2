@@ -46,11 +46,6 @@ public class UserServiceTests {
 	}
 	
 	@Test
-	public void logoutTest(){
-		assertEquals("redirect:logoutPage", userService.logout());
-	}
-	
-	@Test
 	public void getUserByUserNameTest() throws NotFound {
 		User user = new User();
 		user.setUsername("Ryan");
