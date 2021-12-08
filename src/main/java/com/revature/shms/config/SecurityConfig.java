@@ -31,13 +31,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //testing roles
 
         http.authorizeRequests()
-                .antMatchers("/u").hasAuthority("USER")
-                .antMatchers("/m").hasAuthority("MANAGER")
-                .antMatchers("/e").hasAuthority("EMPLOYEE")
-                .and().formLogin();
+                .antMatchers("/employee/*").hasAuthority("EMPLOYEE");
 
         http.csrf().disable().authorizeRequests()
-                .antMatchers("/authenticate","/users","employee")
+                .antMatchers("/authenticate","/users ","/employee")
                 .permitAll().anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

@@ -1,8 +1,15 @@
 package com.revature.shms.models;
 
 import com.revature.shms.enums.EmployeeType;
+import com.revature.shms.enums.Roles;
+import com.revature.shms.services.MyUserDetailsService;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -10,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Employee {
+public class Employee extends secUserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	int employeeID;
@@ -27,14 +34,13 @@ public class Employee {
 	@Column(nullable = false)
 	EmployeeType employeeType;
 
-	/*  Probably can just work with employeeType
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "EMPLOYEE_ROLES",
-			joinColumns = {
-				@JoinColumn(name = "EMPLOYEE_ID")
-			}
-	)
-	private Set<Role> roles;*/
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return Arrays.asList(new SimpleGrantedAuthority(getRole().getValue()));
+	}
 
-
+	@Override
+	public Roles getRole() {
+		return (employeeType == EmployeeType.MANAGER)? Roles.MANAGER:Roles.EMPLOYEE;
+	}
 }

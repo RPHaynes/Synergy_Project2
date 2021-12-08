@@ -1,4 +1,5 @@
 package com.revature.shms.auth;
+import com.revature.shms.enums.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,6 @@ public class AuthenticationRequest {
     //add role too, later
     private String username;
     private String password;
+	private Roles role;
 
 }

@@ -1,5 +1,5 @@
 package com.revature.shms.util;
-import com.revature.shms.models.MyUserDetails;
+import com.revature.shms.models.secUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -36,7 +36,7 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(MyUserDetails userDetails){
+    public String generateToken(secUserDetails userDetails){
         Map<String, Object> claims = new HashMap<>();
         claims.put("Role", userDetails.getAuthorities());
         return createToken(claims, userDetails.getUsername());

@@ -1,4 +1,5 @@
 package com.revature.shms.models;
+import com.revature.shms.enums.Roles;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,41 +11,33 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class MyUserDetails implements UserDetails {
+public class secUserDetails implements UserDetails {
 
-    private String username;
-    private String password;
-    private List<GrantedAuthority> authorities;
-    private Role role;
 
-    public MyUserDetails(){
+
+    public secUserDetails(){
 
     }
-
-    //Override UserDetails to be our users
-    public MyUserDetails(User user){
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        //this.role = role;
-        //this.authorities = Arrays.stream(user.getRoles().split(","))
-        //        .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //return authorities;
-        return Arrays.asList(new SimpleGrantedAuthority("USER"));
+        return Arrays.asList(new SimpleGrantedAuthority(Roles.USER.getValue()));
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return "password";
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return "username";
     }
+
+
+	public Roles getRole(){
+		return Roles.USER;
+	}
 
     @Override
     public boolean isAccountNonExpired() {

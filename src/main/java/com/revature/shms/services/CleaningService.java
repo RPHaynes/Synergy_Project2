@@ -32,11 +32,11 @@ public class CleaningService {
 
 	/**
 	 * Gets All Cleanings assigned to a specific employee.
-	 * @param employee the employee to match.
+	 * @param employeeID the employee to match.
 	 * @return all Cleanings sorted that are assigned to employee.
 	 */
-	public Page<Cleaning> employeeCleaningToDo(Employee employee,Pageable pageable){
-		return findAllCleaningsByEmployee(employee,pageable);
+	public Page<Cleaning> employeeCleaningToDo(int employeeID,Pageable pageable) throws NotFound {
+		return findAllCleaningsByEmployee(employeeService.findEmployeeByID(employeeID),pageable);
 	}
 
 	/**

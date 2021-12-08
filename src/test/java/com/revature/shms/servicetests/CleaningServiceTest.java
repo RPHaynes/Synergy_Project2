@@ -36,9 +36,9 @@ public class CleaningServiceTest {
 	@InjectMocks CleaningService cleaningService;
 
 	@Test
-	public void employeeCleaningToDoTest(){
+	public void employeeCleaningToDoTest() throws NotFound {
 		when(cleaningRepository.findAllByEmployeeOrderByPriorityDescDateAddedAsc(any(), any())).thenReturn(null);
-		assertNull(cleaningService.employeeCleaningToDo(new Employee(), null));
+		assertNull(cleaningService.employeeCleaningToDo(1, null));
 	}
 
 	@Test

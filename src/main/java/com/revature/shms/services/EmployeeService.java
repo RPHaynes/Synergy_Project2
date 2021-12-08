@@ -26,8 +26,6 @@ public class EmployeeService {
 	@Autowired
 	private EmployeeRepository employeeRepository;
 	@Autowired
-	private CleaningService cleaningService;
-	@Autowired
 	private RoomService roomService;
 	@Autowired
 	private UserService userService;
@@ -93,14 +91,7 @@ public class EmployeeService {
 		return employeeRepository.findByUsername(userName).orElseThrow(NotFound::new);
 	}
 
-	/**
-	 * Gets All Cleanings assigned to a specific employee.
-	 * @param employee the employee to match.
-	 * @return all Cleanings sorted that are assigned to employee.
-	 */
-	public Page<Cleaning> employeeCleaningToDo(Employee employee, Pageable pageable){
-		return cleaningService.findAllCleaningsByEmployee(employee, pageable);
-	}
+
 
 	/**
 	 * Update password by the provided username.

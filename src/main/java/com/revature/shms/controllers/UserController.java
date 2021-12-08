@@ -17,6 +17,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     @GetMapping("/{userId}")
     public ResponseEntity<?> findUserById(@PathVariable String userId) {
         return ResponseEntity.ok( userRepository.findByUserID(Integer.parseInt(userId)));

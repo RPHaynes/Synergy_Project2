@@ -93,16 +93,7 @@ public class EmployeeServiceTests {
 		assertEquals(employee, employeeService.findEmployeeByUserName(username));
 	}
 
-	@Test
-	public void employeeCleaningToDoTest(){
-		Employee employee = new Employee();
-		List<Cleaning> cleaningList = new ArrayList<>();
-		cleaningList.add(new Cleaning());
-		cleaningList.add(new Cleaning());
-		Page<Cleaning> cleaningPage = new PageImpl<>(cleaningList);
-		when(cleaningService.findAllCleaningsByEmployee(any(),any())).thenReturn(cleaningPage);
-		assertEquals(cleaningList, employeeService.employeeCleaningToDo(employee,null).getContent());
-	}
+
 
 	@Test
 	public void updatePasswordTestTrue(){
@@ -179,17 +170,14 @@ public class EmployeeServiceTests {
 
 		EmployeeRepository employeeRepository = null;
 		RoomRepository roomRepository = null;
-		CleaningService cleaningService = new CleaningService();
 		RoomService roomService = new RoomService();
 		UserService userService = new UserService();
 
-		employeeService.setCleaningService(cleaningService);
 		employeeService.setRoomService(roomService);
 		employeeService.setUserService(userService);
 		employeeService.setEmployeeRepository(employeeRepository);
 		employeeService.setRoomRepository(roomRepository);
 
-		assertEquals(cleaningService,employeeService.getCleaningService());
 		assertEquals(roomService,employeeService.getRoomService());
 		assertEquals(userService,employeeService.getUserService());
 		assertNull(employeeService.getEmployeeRepository());

@@ -1,5 +1,4 @@
 package com.revature.shms.servicetests;
-
 import com.revature.shms.models.User;
 import com.revature.shms.repositories.UserRepository;
 import com.revature.shms.services.MyUserDetailsService;
