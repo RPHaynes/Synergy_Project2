@@ -39,6 +39,8 @@ public class secUserDetails implements UserDetails {
 		return Roles.USER;
 	}
 
+	public Integer getID(){return -1;}
+
     @Override
     public boolean isAccountNonExpired() {
         //change this

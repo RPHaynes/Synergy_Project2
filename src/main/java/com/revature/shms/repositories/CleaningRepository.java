@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface CleaningRepository  extends JpaRepository<Cleaning,Integer> {
-
 	Page<Cleaning> findAllByOrderByPriorityDescDateAddedAsc(Pageable pageable);
 	Page<Cleaning> findAllByEmployeeOrderByPriorityDescDateAddedAsc(Employee employee, Pageable pageable);
 

@@ -12,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @Service // this annotation is to denote that this is a service class for user
 @NoArgsConstructor
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Setter
 @AllArgsConstructor
 public class UserService{
+
     @Autowired
     private UserRepository userRepository;
 
@@ -48,6 +47,120 @@ public class UserService{
 		throw new AccessDeniedException("Incorrect username/password");
 	}
 
+    // -- Updates
+    /**
+     * Update password by the provided username.
+     * @param username the username that already exists on the repository.
+     * @param oldPassword the password that the user currently uses.
+     * @param newPassword the password that the user wants to switch to.
+     * Get the current username from the user.
+     * If the username is already in the database, then we can update the password
+     */
+    public boolean updatePassword(String username, String oldPassword, String newPassword) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if(user != null) {
+            if(user.getPassword().equals(oldPassword)){
+                user.setPassword(newPassword);
+                userRepository.save(user);
+                return true;
+            }
+            else{
+                // Username/Password invalid.
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Update password by the provided username.
+     * @param userID the userID that already exists on the repository.
+     * @param oldPassword the password that the user currently uses.
+     * @param newPassword the password that the user wants to switch to.
+     * Get the current userID from the user.
+     * If the userID is already in the database, then we can update the password
+     */
+    public boolean updatePassword(int userID, String oldPassword, String newPassword) {
+        User user = userRepository.findByUserID(userID).orElse(null);
+        if(user != null) {
+            if(user.getPassword().equals(oldPassword)){
+                user.setPassword(newPassword);
+                userRepository.save(user);
+                return true;
+            }
+            else{
+                // Username/Password invalid.
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Updating the first name of the user
+     * @param userID the user to be matched by userID
+     * @param firstName the first name to be changed to
+     * @return boolean if the userId exits then change the firstname of the user
+     * Get the userID from the user.
+     * If the first name is already in the database, then update the first name
+     */
+    public boolean updateFirstName(int userID, String firstName){
+        User user = userRepository.findByUserID(userID).orElse(null);
+        if(user != null){
+            user.setFirstName(firstName);
+            userRepository.save(user);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Updating the last name of the user
+     * @param userID the user to be matched by userID
+     * @param lastName the last name to be changed to.
+     * @return boolean if the userId exits then change the last name of the user
+     * Get the userID from the user.
+     * If the last name is already in the database, then update the last name
+     */
+    public boolean updateLastName(int userID, String lastName){
+        User user = userRepository.findByUserID(userID).orElse(null);
+        if(user != null){
+            user.setLastName(lastName);
+            userRepository.save(user);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Updating the last name of the user
+     * @param userID the user to be matched by userID
+     * @param email the email to be changed to.
+     * @return boolean if the userId exits then change the last name of the user
+     * Get the userId from the employee.
+     * If the last name is already in the database, then update the last name
+     */
+    public boolean updateEmail(int userID, String email){
+        User user = userRepository.findByUserID(userID).orElse(null);
+        if(user != null){
+            user.setEmail(email);
+            userRepository.save(user);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    // -- Finds
     /**
      * Gets a list of all users.
      * @return List<User> for all users in the database ordered by UserID in descending order.
@@ -74,68 +187,6 @@ public class UserService{
      */
     public User findUserByUserID(int userID) throws NotFound {
         return userRepository.findByUserID(userID).orElseThrow(NotFound::new);
-    }
-
-    /**
-     * Update password by the provided username.
-     * @param username the username that already exists on the repository.
-     * @param oldPassword the password that the employee currently uses.
-     * @param newPassword the password that the employee wants to switch to.
-     * Get the current username from the employee.
-     * If the username is already in the database, then we can update the password
-     */
-    public boolean updatePassword(String username, String oldPassword, String newPassword) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        if(user != null) {
-            if(user.getPassword().equals(oldPassword)){
-                user.setPassword(newPassword);
-                userRepository.save(user);
-                return true;
-            }
-            else{
-                // Username/Password invalid.
-                return false;
-            }
-        }
-        else{
-            return false;
-        }
-    }
-
-    /**
-     *
-     * @param userID
-     * @param firstName
-     * @return
-     */
-    public boolean updateFirstName(int userID, String firstName){
-        User user = userRepository.findByUserID(userID).orElse(null);
-        if(user != null){
-            user.setFirstName(firstName);
-            userRepository.save(user);
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
-    /**
-     *
-     * @param userID
-     * @param lastName
-     * @return
-     */
-    public boolean updateLastName(int userID, String lastName){
-        User user = userRepository.findByUserID(userID).orElse(null);
-        if(user != null){
-            user.setLastName(lastName);
-            userRepository.save(user);
-            return true;
-        }
-        else{
-            return false;
-        }
     }
 }
 

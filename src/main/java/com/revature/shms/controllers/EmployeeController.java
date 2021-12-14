@@ -5,6 +5,8 @@ import com.revature.shms.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -21,9 +23,16 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.createEmployee(employee));
     }
 
-    @RequestMapping("/{employeeId}")
-    public ResponseEntity<?> getEmployeeById(@PathVariable String employeeId){
-        return ResponseEntity.ok( employeeRepository.findByEmployeeID(Integer.parseInt(employeeId)));
+    @RequestMapping("/{employeeID}")
+    public ResponseEntity<?> getEmployeeById(@PathVariable int employeeID){
+        return ResponseEntity.ok( employeeRepository.findByEmployeeID(employeeID));
     }
 
+    @PutMapping("/{employeeID}")
+    public ResponseEntity<?> updatePassword(@PathVariable int employeeID,
+                                            @RequestBody HashMap<String, String> password)
+    {
+        return ResponseEntity.ok(employeeService.updatePassword(employeeID, password.get("old"),
+                password.get("new")));
+    }
 }

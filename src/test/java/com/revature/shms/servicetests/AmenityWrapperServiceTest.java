@@ -28,22 +28,19 @@ public class AmenityWrapperServiceTest {
 	@InjectMocks AmenityWrapperService service;
 
 	@Test
-	public void findAllAmenitiesTest(){
-		List<AmenityWrapper> amenityWrappers = new ArrayList<>();
-		amenityWrappers.add(new AmenityWrapper(Amenities.ADA, 123));
-		amenityWrappers.add(new AmenityWrapper(Amenities.KING_BED, 12));
-		Page<AmenityWrapper> pg = new PageImpl<>(amenityWrappers);
-		when(repo.findAll(any(Pageable.class))).thenReturn(pg);
-		assertEquals(amenityWrappers, service.findAllAmenities(PageRequest.of(0, 1000000)).getContent());
-	}
-
-	@Test
 	public void setAmenityPriceTest(){
 		AmenityWrapper wrapper = new AmenityWrapper(Amenities.SMALL_KITCHEN, 100);
 		when(repo.save(any(AmenityWrapper.class))).thenReturn(wrapper);
 		assertEquals(wrapper, service.setAmenityPrice(Amenities.SMALL_KITCHEN, 100));
 	}
 
+	@Test
+	public void GenerateAllAmenityWrappersTest(){
+		service.GenerateAllAmenityWrappers();
+		verify(repo, times(Amenities.values().length)).save(any());
+	}
+
+	// -- Gets
 	@Test
 	public void getAmenityWrapperTest(){
 		AmenityWrapper wrapper = new AmenityWrapper(Amenities.SMALL_KITCHEN, 100);
@@ -66,12 +63,18 @@ public class AmenityWrapperServiceTest {
 		assertEquals(135, service.getTotal(amenityWrappers));
 	}
 
+	// -- Finds
 	@Test
-	public void GenerateAllAmenityWrappersTest(){
-		service.GenerateAllAmenityWrappers();
-		verify(repo, times(Amenities.values().length)).save(any());
+	public void findAllAmenitiesTest(){
+		List<AmenityWrapper> amenityWrappers = new ArrayList<>();
+		amenityWrappers.add(new AmenityWrapper(Amenities.ADA, 123));
+		amenityWrappers.add(new AmenityWrapper(Amenities.KING_BED, 12));
+		Page<AmenityWrapper> pg = new PageImpl<>(amenityWrappers);
+		when(repo.findAll(any(Pageable.class))).thenReturn(pg);
+		assertEquals(amenityWrappers, service.findAllAmenities(PageRequest.of(0, 1000000)).getContent());
 	}
 
+	// -- Getter and Setters
 	@Test
 	public void getterAndSetterTest(){
 		AmenityWrapperRepository amenityWrapperRepository = null;

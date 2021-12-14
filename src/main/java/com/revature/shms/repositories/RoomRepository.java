@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room,Integer> {
-
     Page<Room> findAllByOrderByRoomNumberDesc(Pageable pageable);
     Page<Room> findAllByStatus(CleaningStatus status, Pageable pageable);
     Page<Room> findAllByStatusNot(CleaningStatus status,Pageable pageable);

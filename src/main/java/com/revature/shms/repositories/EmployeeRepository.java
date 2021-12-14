@@ -12,13 +12,9 @@ import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
-
     Page<Employee> findAllByOrderByEmployeeType(Pageable pageable);
 	Page<Employee> findByEmployeeType(EmployeeType employeeType,Pageable pageable);
 
     Optional<Employee> findByUsername(String username);
 	Optional<Employee> findByEmployeeID(int employeeID);
-
-//    boolean updatePassword(String username,String password);
-//    boolean updatePassword(String password);
 }

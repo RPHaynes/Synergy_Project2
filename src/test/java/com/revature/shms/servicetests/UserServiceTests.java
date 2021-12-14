@@ -44,18 +44,80 @@ public class UserServiceTests {
 			assertTrue(e.getMessage().contains("Incorrect username/password"));
 		} catch (Exception ignored){}
 	}
-	
+
+	// -- Update
 	@Test
-	public void getUserByUserNameTest() throws NotFound {
+	public void updatePasswordTest(){
+		int userID = 1;
+		String username = "jlecl";
+		String oldPassword = "Password";
+		String newPassword = "new";
+
+		when(userRepository.findByUsername(any())).thenReturn(java.util.Optional.empty());
+		assertFalse(userService.updatePassword(username, oldPassword, newPassword)); // no info
+
+		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.empty());
+		assertFalse(userService.updatePassword(userID, oldPassword, newPassword)); // no info
+
 		User user = new User();
-		user.setUsername("Ryan");
-		user.setPassword("123123");
+		user.setUserID(userID);
+		user.setUsername(username);
+		user.setPassword(oldPassword);
 		when(userRepository.findByUsername(any())).thenReturn(java.util.Optional.of(user));
-		assertEquals(user, userService.findUserByUsername("Ryan"));
+		assertFalse(userService.updatePassword(username, newPassword, oldPassword)); // wrong password
+		assertTrue(userService.updatePassword(username, oldPassword, newPassword)); // right password
+
+		user.setPassword(oldPassword);
+		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.of(user));
+		assertFalse(userService.updatePassword(userID, newPassword, oldPassword)); // wrong password
+		assertTrue(userService.updatePassword(userID, oldPassword, newPassword)); // right password
 	}
-	
+
 	@Test
-	public void getAllUsersTest(){
+	public void updateFirstNameTest(){
+		int userID = 1;
+		String firstName = "Jennica";
+
+		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.empty());
+		assertFalse(userService.updateFirstName(userID, firstName));
+
+		User user = new User();
+		user.setUserID(userID);
+		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.of(user));
+		assertTrue(userService.updateFirstName(userID, firstName));
+	}
+
+	@Test
+	public void updateLastNameTest(){
+		int userID = 1;
+		String lastName = "LeClerc";
+
+		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.empty());
+		assertFalse(userService.updateLastName(userID, lastName));
+
+		User user = new User();
+		user.setUserID(userID);
+		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.of(user));
+		assertTrue(userService.updateLastName(userID, lastName));
+	}
+
+	@Test
+	public void updateEmailTest(){
+		int userID = 1;
+		String email = "email@email.com";
+
+		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.empty());
+		assertFalse(userService.updateEmail(userID, email));
+
+		User user = new User();
+		user.setUserID(userID);
+		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.of(user));
+		assertTrue(userService.updateEmail(userID, email));
+	}
+
+	// -- Finds
+	@Test
+	public void findAllUsersTest(){
 		List<User> users = new ArrayList<>();
 		users.add(new User());
 		users.add(new User());
@@ -67,84 +129,25 @@ public class UserServiceTests {
 		when(userRepository.findAllByOrderByUserIDDesc(any())).thenReturn(usersPage);
 		assertEquals(users, userService.findAllUsers(null).getContent());
 	}
-	
+
 	@Test
-	public void getUserByUserId() throws NotFound {
+	public void findUserByUserNameTest() throws NotFound {
+		User user = new User();
+		user.setUsername("Ryan");
+		user.setPassword("123123");
+		when(userRepository.findByUsername(any())).thenReturn(java.util.Optional.of(user));
+		assertEquals(user, userService.findUserByUsername("Ryan"));
+	}
+
+	@Test
+	public void findUserByUserId() throws NotFound {
 		User user = new User();
 		user.setUserID(123);
 		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.of(user));
 		assertEquals(user, userService.findUserByUserID(123));
 	}
 
-	@Test
-	public void updatePasswordTestTrue(){
-		String username = "jlecl";
-		String oldPassword = "Password";
-		String newPassword = "new";
-		User user = new User();
-		user.setUsername(username);
-		user.setPassword(oldPassword);
-		when(userRepository.findByUsername(any())).thenReturn(java.util.Optional.of(user));
-		assertTrue(userService.updatePassword(username, oldPassword, newPassword));
-	}
-
-	@Test
-	public void updatePasswordTestWrongPassword(){
-		String username = "jlecl";
-		String rightPassword = "Password";
-		String wrongPassword = "new";
-		User user = new User();
-		user.setUsername(username);
-		user.setPassword(rightPassword);
-		when(userRepository.findByUsername(any())).thenReturn(java.util.Optional.of(user));
-		assertFalse(userService.updatePassword(username, wrongPassword, rightPassword));
-	}
-
-	@Test
-	public void updatePasswordTestFalse(){
-		String username = "jlecl";
-		String oldPassword = "Password";
-		String newPassword = "new";
-		when(userRepository.findByUsername(any())).thenReturn(java.util.Optional.empty());
-		assertFalse(userService.updatePassword(username, oldPassword, newPassword));
-	}
-
-	@Test
-	public void updateFirstNameTestTrue(){
-		int userID = 1;
-		String firstName = "Jennica";
-		User user = new User();
-		user.setUserID(userID);
-		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.of(user));
-		assertTrue(userService.updateFirstName(userID, firstName));
-	}
-
-	@Test
-	public void updateFirstNameTestFalse(){
-		int userID = 1;
-		String firstName = "Jennica";
-		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.empty());
-		assertFalse(userService.updateFirstName(userID, firstName));
-	}
-
-	@Test
-	public void updateLastNameTestTrue(){
-		int userID = 1;
-		String lastName = "LeClerc";
-		User user = new User();
-		user.setUserID(userID);
-		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.of(user));
-		assertTrue(userService.updateLastName(userID, lastName));
-	}
-
-	@Test
-	public void updateLastNameTestFalse(){
-		int userID = 1;
-		String lastName = "LeClerc";
-		when(userRepository.findByUserID(anyInt())).thenReturn(java.util.Optional.empty());
-		assertFalse(userService.updateLastName(userID, lastName));
-	}
-
+	// -- Getter/Setter
 	@Test
 	public void gettersSetters(){
 		UserService userService = new UserService();

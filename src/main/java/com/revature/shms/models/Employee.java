@@ -40,6 +40,11 @@ public class Employee extends secUserDetails {
 	}
 
 	@Override
+	public Integer getID() {
+		return employeeID;
+	}
+
+	@Override
 	public Roles getRole() {
 		return (employeeType == EmployeeType.MANAGER)? Roles.MANAGER:Roles.EMPLOYEE;
 	}

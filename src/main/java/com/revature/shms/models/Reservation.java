@@ -29,14 +29,15 @@ public class Reservation {
     ReservationStatus status;
 
     @Column
-    String startDate;
+    Date startDate;
     @Column
-    String endDate;
+    Date endDate;
 
     @Column
     String accommodations;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JsonBackReference
-    private User userReserve;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+	@JsonBackReference
+    User userReserve;
 }

@@ -35,26 +35,34 @@ public class CleaningServiceTest {
 	@Mock CleaningRepository cleaningRepository;
 	@InjectMocks CleaningService cleaningService;
 
+	// -- Create/Delete
 	@Test
-	public void employeeCleaningToDoTest() throws NotFound {
-		when(cleaningRepository.findAllByEmployeeOrderByPriorityDescDateAddedAsc(any(), any())).thenReturn(null);
-		assertNull(cleaningService.employeeCleaningToDo(1, null));
+	public void createCleaningTest(){
+		Cleaning cleaning = new Cleaning();
+		when(cleaningRepository.save(any())).thenReturn(cleaning);
+		assertEquals(cleaning, cleaningService.createCleaning(cleaning));
+	}
+
+	@Test
+	public void removeCleaningTest(){
+		Cleaning cleaning = new Cleaning();
+		cleaningService.removeCleaning(cleaning);
+		verify(cleaningRepository, times(1)).delete(any());
 	}
 
 	@Test
 	public void scheduleCleaningRoomTest() throws NotFound {
 		Employee employee = new Employee();
-		employee.setEmployeeType(EmployeeType.RECEPTIONIST);
-		when(cleaningRepository.save(any())).thenReturn(new Cleaning());
-		assertNull(cleaningService.scheduleCleaningRoom(null, employee, null, 0));
-
 		Room room = new Room();
 		employee.setEmployeeType(EmployeeType.MAINTENANCE);
 		room.setStatus(CleaningStatus.NOT_SCHEDULED);
-		when(roomService.scheduleCleaning(anyInt())).thenReturn(room);
-		assertEquals(room, cleaningService.scheduleCleaningRoom(null, employee, room, 0));
+		Cleaning c = new Cleaning();
+		when(roomService.scheduledCleaning(anyInt())).thenReturn(room);
+		when(cleaningRepository.save(any())).thenReturn(c);
+		assertEquals(c, cleaningService.scheduleCleaningRoom( employee.getEmployeeID(), room.getRoomNumber(), 0));
 	}
 
+	// -- Cleaning Start/Stop
 	@Test
 	public void startCleanRoomTest() throws NotFound {
 		int employeeID = 1;
@@ -96,6 +104,7 @@ public class CleaningServiceTest {
 		assertEquals(room, cleaningService.finishCleaningRoom(employeeID, roomNumber));
 	}
 
+	// -- Finds
 	@Test
 	public void findAllCleaningsTest(){
 		List<Cleaning> cleanings = new ArrayList<>();
@@ -109,12 +118,18 @@ public class CleaningServiceTest {
 	}
 
 	@Test
-	public void findAllCleaningsByEmployeeTest(){
+	public void findAllCleaningsByEmployeeTest() throws NotFound {
+		int employeeID = 1;
+		Employee employee = new Employee();
+		employee.setEmployeeID(employeeID);
+
 		List<Cleaning> cleaningList = new ArrayList<>();
 		cleaningList.add(new Cleaning());
 		Page<Cleaning> cleaningPage = new PageImpl<>(cleaningList);
+
+		when(employeeService.findEmployeeByID(anyInt())).thenReturn(employee);
 		when(cleaningRepository.findAllByEmployeeOrderByPriorityDescDateAddedAsc(any(),any())).thenReturn(cleaningPage);
-		assertEquals(cleaningList, cleaningService.findAllCleaningsByEmployee(new Employee(),null).getContent());
+		assertEquals(cleaningList, cleaningService.findAllCleaningsByEmployee(employeeID,null).getContent());
 	}
 
 	@Test
@@ -124,20 +139,7 @@ public class CleaningServiceTest {
 		assertEquals(cleaning, cleaningService.findByRoom(new Room()));
 	}
 
-	@Test
-	public void createCleaningTest(){
-		Cleaning cleaning = new Cleaning();
-		when(cleaningRepository.save(any())).thenReturn(cleaning);
-		assertEquals(cleaning, cleaningService.createCleaning(cleaning));
-	}
-
-	@Test
-	public void removeCleaningTest(){
-		Cleaning cleaning = new Cleaning();
-		cleaningService.removeCleaning(cleaning);
-		verify(cleaningRepository, times(1)).delete(any());
-	}
-
+	// -- Getter/Setter
 	@Test
 	public void gettersSetters(){
 		CleaningRepository cleaningRepository = null;

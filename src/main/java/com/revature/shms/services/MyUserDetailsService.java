@@ -1,4 +1,5 @@
 package com.revature.shms.services;
+
 import com.revature.shms.auth.AuthenticationRequest;
 import com.revature.shms.enums.Roles;
 
@@ -19,6 +20,12 @@ public class MyUserDetailsService implements UserDetailsService {
 	@Autowired
 	EmployeeRepository employeeRepository;
 
+	/**
+	 *
+	 * @param authenticationRequest
+	 * @return
+	 * @throws UsernameNotFoundException
+	 */
     public secUserDetails loadUserByUsername(AuthenticationRequest authenticationRequest) throws UsernameNotFoundException {
 		secUserDetails user;
 		if (authenticationRequest.getRole().equals(Roles.USER))

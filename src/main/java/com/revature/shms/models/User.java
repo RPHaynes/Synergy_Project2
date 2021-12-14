@@ -17,14 +17,19 @@ public class User extends secUserDetails{
 
 	String firstName;
 	String lastName;
+	String email;
 
 	@Column(nullable = false, unique = true)
 	String username;
 	@Column(nullable = false)
 	String password;
 
+	@Override
+	public Integer getID() {
+		return userID;
+	}
 
-  	@OneToMany(mappedBy = "userReserve")
+	@OneToMany(mappedBy = "userReserve", cascade = CascadeType.MERGE)
 	@JsonManagedReference
-	private List<Reservation> reservations;
+	List<Reservation> reservations;
 }

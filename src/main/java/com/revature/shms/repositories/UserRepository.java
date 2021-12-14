@@ -9,7 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Integer> {
-
     Page<User> findAllByOrderByUserIDDesc(Pageable pageable);
   
     Optional<User> findByUsername(String username);

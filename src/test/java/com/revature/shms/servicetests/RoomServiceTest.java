@@ -7,7 +7,6 @@ import com.revature.shms.models.AmenityWrapper;
 import com.revature.shms.models.Room;
 import com.revature.shms.repositories.RoomRepository;
 import com.revature.shms.services.RoomService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,56 +48,33 @@ public class RoomServiceTest {
 		assertEquals(rooms, roomService.addRooms(rooms));
 	}
 
+	// --- isAvailable ---
 	@Test
-	public void isAvailableTestTrue(){
+	public void isAvailableTest(){
 		Room room = new Room();
 		room.setStatus(CleaningStatus.CLEAN);
 		room.setWorkStatus(WorkStatus.NO_ISSUES);
 		room.setOccupied(false);
+
+		// all correct
 		assertTrue(roomService.isAvailable(room));
-	}
 
-	@Test
-	public void isAvailableTestWrongCleaning(){
-		Room room = new Room();
+		// cleaning status wrong
 		room.setStatus(CleaningStatus.NOT_SCHEDULED);
-		room.setWorkStatus(WorkStatus.NO_ISSUES);
-		room.setOccupied(false);
 		assertFalse(roomService.isAvailable(room));
-	}
 
-	@Test
-	public void isAvailableTestWrongWorking(){
-		Room room = new Room();
+		// working status wrong
 		room.setStatus(CleaningStatus.CLEAN);
 		room.setWorkStatus(WorkStatus.SCHEDULED);
-		room.setOccupied(false);
 		assertFalse(roomService.isAvailable(room));
-	}
 
-	@Test
-	public void isAvailableTestWrongOccupied(){
-		Room room = new Room();
-		room.setStatus(CleaningStatus.CLEAN);
+		// occupation status wrong
 		room.setWorkStatus(WorkStatus.NO_ISSUES);
 		room.setOccupied(true);
 		assertFalse(roomService.isAvailable(room));
 	}
 
-	@Test
-	public void findAllAvailableTest(){
-		Room room = new Room();
-		room.setStatus(CleaningStatus.CLEAN);
-		room.setOccupied(false);
-		room.setWorkStatus(WorkStatus.NO_ISSUES);
-		List<Room> roomList = new ArrayList<>();
-		roomList.add(room);
-		roomList.add(room);
-		Page<Room> roomPage = new PageImpl<>(roomList);
-		when(roomRepository.findAllByStatusAndIsOccupiedAndWorkStatusOrderByRoomNumberDesc(any(), anyBoolean(), any(),any())).thenReturn(roomPage);
-		assertEquals(roomList, roomService.findAllAvailable(null).getContent());
-	}
-
+	// --- isOccupied ---
 	@Test
 	public void setOccupationStatusTest() throws NotFound {
 		int roomNumber = 1;
@@ -108,22 +84,6 @@ public class RoomServiceTest {
 		room.setOccupied(isOccupied);
 		when(roomRepository.findByRoomNumber(anyInt())).thenReturn(java.util.Optional.of(room));
 		assertEquals(room, roomService.setOccupationStatus(roomNumber, isOccupied));
-	}
-
-	@Test
-	public void getAllByIsOccupiedTest(){
-		boolean testing = true;
-		for(int i = 0; i < 2; i++){
-			Room room = new Room();
-			room.setOccupied(testing);
-			List<Room> roomList = new ArrayList<>();
-			roomList.add(room);
-			roomList.add(room);
-			Page<Room> roomPage = new PageImpl<>(roomList);
-			when(roomRepository.findAllByIsOccupied(anyBoolean(),any())).thenReturn(roomPage);
-			assertEquals(roomList, roomService.findAllByIsOccupied(testing,null).getContent());
-			testing = false;
-		}
 	}
 
 	@Test
@@ -144,6 +104,7 @@ public class RoomServiceTest {
 		assertFalse(roomService.notOccupied(roomNumber).isOccupied());
 	}
 
+	// --- Cleaning Status ---
 	@Test
 	public void setRoomStatusTest() throws NotFound {
 		int roomNumber = 1;
@@ -156,21 +117,21 @@ public class RoomServiceTest {
 	}
 
 	@Test
-	public void scheduleCleaningTest() throws NotFound {
+	public void scheduledCleaningTest() throws NotFound {
 		int roomNumber = 1;
 		Room room = new Room();
 		room.setRoomNumber(roomNumber);
 		when(roomRepository.findByRoomNumber(anyInt())).thenReturn(java.util.Optional.of(room));
-		assertEquals(CleaningStatus.SCHEDULED, roomService.scheduleCleaning(roomNumber).getStatus());
+		assertEquals(CleaningStatus.SCHEDULED, roomService.scheduledCleaning(roomNumber).getStatus());
 	}
 
 	@Test
-	public void notScheduleCleaningTest() throws NotFound {
+	public void notScheduledCleaningTest() throws NotFound {
 		int roomNumber = 1;
 		Room room = new Room();
 		room.setRoomNumber(roomNumber);
 		when(roomRepository.findByRoomNumber(anyInt())).thenReturn(java.util.Optional.of(room));
-		assertEquals(CleaningStatus.NOT_SCHEDULED, roomService.notScheduleCleaning(roomNumber).getStatus());
+		assertEquals(CleaningStatus.NOT_SCHEDULED, roomService.notScheduledCleaning(roomNumber).getStatus());
 	}
 
 	@Test
@@ -191,8 +152,124 @@ public class RoomServiceTest {
 		assertEquals(CleaningStatus.CLEAN, roomService.finishCleaning(roomNumber).getStatus());
 	}
 
+	// --- Work Status ---
 	@Test
-	public void getAllByStatusTest(){
+	public void setWorkStatusTest() throws NotFound {
+		int roomNumber = 1;
+		Room room = new Room();
+		room.setRoomNumber(roomNumber);
+		when(roomRepository.findByRoomNumber(anyInt())).thenReturn(java.util.Optional.of(room));
+		for(WorkStatus workStatus: WorkStatus.values()){
+			assertEquals(workStatus, roomService.setWorkStatus(roomNumber, workStatus).getWorkStatus());
+		}
+	}
+
+	@Test
+	public void startWorkingTest() throws NotFound {
+		int roomNumber = 1;
+		Room room = new Room();
+		room.setRoomNumber(roomNumber);
+		when(roomRepository.findByRoomNumber(anyInt())).thenReturn(java.util.Optional.of(room));
+		assertEquals(WorkStatus.IN_PROGRESS, roomService.startWorking(roomNumber).getWorkStatus());
+	}
+
+	@Test
+	public void finishWorkingTest() throws NotFound {
+		int roomNumber = 1;
+		Room room = new Room();
+		room.setRoomNumber(roomNumber);
+		when(roomRepository.findByRoomNumber(anyInt())).thenReturn(java.util.Optional.of(room));
+		assertEquals(WorkStatus.NO_ISSUES, roomService.finishWorking(roomNumber).getWorkStatus());
+	}
+
+	@Test
+	public void scheduleWorkingTest() throws NotFound {
+		int roomNumber = 1;
+		Room room = new Room();
+		room.setRoomNumber(roomNumber);
+		when(roomRepository.findByRoomNumber(anyInt())).thenReturn(java.util.Optional.of(room));
+		assertEquals(WorkStatus.SCHEDULED, roomService.scheduleWorking(roomNumber).getWorkStatus());
+	}
+
+	@Test
+	public void notScheduleWorkingTest() throws NotFound {
+		int roomNumber = 1;
+		Room room = new Room();
+		room.setRoomNumber(roomNumber);
+		when(roomRepository.findByRoomNumber(anyInt())).thenReturn(java.util.Optional.of(room));
+		assertEquals(WorkStatus.NOT_SCHEDULED, roomService.notScheduleWorking(roomNumber).getWorkStatus());
+	}
+
+	@Test
+	public void findAllRoomsTest(){
+		List<Room> roomList = new ArrayList<>();
+		roomList.add(new Room());
+		roomList.add(new Room());
+		Page<Room> roomPage = new PageImpl<>(roomList);
+		when(roomRepository.findAllByOrderByRoomNumberDesc(any())).thenReturn(roomPage);
+		assertEquals(roomList, roomService.findAllRooms(null ).getContent());
+	}
+
+	@Test
+	public void findByRoomNumberTest() throws NotFound {
+		int roomNumber = 102;
+		Room room = new Room();
+		room.setRoomNumber(roomNumber);
+		when(roomRepository.findByRoomNumber(roomNumber)).thenReturn(java.util.Optional.of(room));
+		assertEquals(room, roomService.findByRoomNumber(roomNumber));
+	}
+
+	@Test
+	public void findAllByAmenityTest(){
+		for(Amenities amenities:Amenities.values()) {
+			AmenityWrapper amenityWrapper = new AmenityWrapper();
+			amenityWrapper.setAmenity(amenities);
+			List<AmenityWrapper> amenityWrapperList = new ArrayList<>();
+			amenityWrapperList.add(amenityWrapper);
+
+			Room room = new Room();
+			room.setAmenitiesList(amenityWrapperList);
+			List<Room> roomList = new ArrayList<>();
+			roomList.add(room);
+			roomList.add(room);
+			Page<Room> roomPage = new PageImpl<>(roomList);
+			when(roomRepository.findAllByAmenitiesList_Amenity(amenities, null)).thenReturn(roomPage);
+			assertEquals(roomList, roomService.findAllByAmenity(amenities, null).getContent());
+		}
+	}
+
+	@Test
+	public void findAllAvailableTest(){
+		Room room = new Room();
+		room.setStatus(CleaningStatus.CLEAN);
+		room.setOccupied(false);
+		room.setWorkStatus(WorkStatus.NO_ISSUES);
+		List<Room> roomList = new ArrayList<>();
+		roomList.add(room);
+		roomList.add(room);
+		Page<Room> roomPage = new PageImpl<>(roomList);
+		when(roomRepository.findAllByStatusAndIsOccupiedAndWorkStatusOrderByRoomNumberDesc(any(), anyBoolean(), any(),any())).thenReturn(roomPage);
+		assertEquals(roomList, roomService.findAllAvailable(null).getContent());
+	}
+
+	@Test
+	public void findAllByIsOccupiedTest(){
+		boolean testing = true;
+		for(int i = 0; i < 2; i++){
+			Room room = new Room();
+			room.setOccupied(testing);
+			List<Room> roomList = new ArrayList<>();
+			roomList.add(room);
+			roomList.add(room);
+			Page<Room> roomPage = new PageImpl<>(roomList);
+			when(roomRepository.findAllByIsOccupied(anyBoolean(),any())).thenReturn(roomPage);
+			assertEquals(roomList, roomService.findAllByIsOccupied(testing,null).getContent());
+			testing = false;
+		}
+	}
+
+	@Test
+	public void findAllByStatusTest(){
 		for(CleaningStatus cleaningStatus:CleaningStatus.values()) {
 			Room room = new Room();
 			room.setStatus(cleaningStatus);
@@ -220,14 +297,7 @@ public class RoomServiceTest {
 	}
 
 	@Test
-	public void setWorkStatusTest(){
-		for(WorkStatus workStatus: WorkStatus.values()){
-			assertEquals(workStatus, roomService.setWorkStatus(new Room(), workStatus).getWorkStatus());
-		}
-	}
-
-	@Test
-	public void getAllByWorkStatusTest(){
+	public void findAllByWorkStatusTest(){
 		for(WorkStatus workStatus: WorkStatus.values()){
 			Room room = new Room();
 			room.setWorkStatus(workStatus);
@@ -252,64 +322,6 @@ public class RoomServiceTest {
 			when(roomRepository.findAllByWorkStatusNot(any(),any())).thenReturn(roomPage);
 			assertEquals(roomList, roomService.findAllByNotWorkStatus(workStatus, null).getContent());
 		}
-	}
-
-	@Test
-	public void startWorkingTest(){
-		assertEquals(WorkStatus.IN_PROGRESS, roomService.startWorking(new Room()).getWorkStatus());
-	}
-
-	@Test
-	public void finishWorkingTest(){
-		assertEquals(WorkStatus.NO_ISSUES, roomService.finishWorking(new Room()).getWorkStatus());
-	}
-
-	@Test
-	public void scheduleWorkingTest(){
-		assertEquals(WorkStatus.SCHEDULED, roomService.scheduleWorking(new Room()).getWorkStatus());
-	}
-
-	@Test
-	public void notScheduleWorkingTest(){
-		assertEquals(WorkStatus.NOT_SCHEDULED, roomService.notScheduleWorking(new Room()).getWorkStatus());
-	}
-
-	@Test
-	public void getAllRoomsTest(){
-		List<Room> roomList = new ArrayList<>();
-		roomList.add(new Room());
-		roomList.add(new Room());
-		Page<Room> roomPage = new PageImpl<>(roomList);
-		when(roomRepository.findAllByOrderByRoomNumberDesc(any())).thenReturn(roomPage);
-		assertEquals(roomList, roomService.findAllRooms(null ).getContent());
-	}
-
-	@Test
-	public void getAllByAmenityTest(){
-		for(Amenities amenities:Amenities.values()) {
-			AmenityWrapper amenityWrapper = new AmenityWrapper();
-			amenityWrapper.setAmenity(amenities);
-			List<AmenityWrapper> amenityWrapperList = new ArrayList<>();
-			amenityWrapperList.add(amenityWrapper);
-
-			Room room = new Room();
-			room.setAmenitiesList(amenityWrapperList);
-			List<Room> roomList = new ArrayList<>();
-			roomList.add(room);
-			roomList.add(room);
-			Page<Room> roomPage = new PageImpl<>(roomList);
-			when(roomRepository.findAllByAmenitiesList_Amenity(amenities, null)).thenReturn(roomPage);
-			assertEquals(roomList, roomService.findAllByAmenity(amenities, null).getContent());
-		}
-	}
-
-	@Test
-	public void getByRoomNumberTest() throws NotFound {
-		int roomNumber = 102;
-		Room room = new Room();
-		room.setRoomNumber(roomNumber);
-		when(roomRepository.findByRoomNumber(roomNumber)).thenReturn(java.util.Optional.of(room));
-		assertEquals(room, roomService.findByRoomNumber(roomNumber));
 	}
 
 	@Test

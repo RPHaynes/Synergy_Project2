@@ -1,6 +1,5 @@
 package com.revature.shms.controllers;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,5 +22,4 @@ public class TestController {
     public ResponseEntity<?> testURLEmployee(){
         return ResponseEntity.ok("You are an employee");
     }
-
 }

@@ -1,4 +1,5 @@
 package com.revature.shms.controllers;
+
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +25,4 @@ public class ExceptionController {
     public ResponseEntity<?> handleAccessException(AccessDeniedException e){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
-
 }
