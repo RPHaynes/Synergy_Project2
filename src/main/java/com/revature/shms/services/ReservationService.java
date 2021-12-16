@@ -189,9 +189,11 @@ public class  ReservationService {
     public Page<Reservation> getAllApprovedAndStartDate(Pageable pageable) throws ParseException {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDateTime now = LocalDateTime.now();
-        now.plusDays(5);
-        Date todayPlusFive = new SimpleDateFormat("yyyy/MM/dd").parse(dtf.format(now));
-        return reservationRepository.findAllByStatusAndStartDateBefore(ReservationStatus.APPROVED, todayPlusFive, pageable);
+        Date today = new SimpleDateFormat("yyyy/MM/dd").parse(dtf.format(now));
+        Date todayPlusFive = new SimpleDateFormat("yyyy/MM/dd").parse(dtf.format(now.plusDays(5)));
+        System.out.println(todayPlusFive+" plus");
+        System.out.println(today+ " today");
+        return reservationRepository.findAllByStatusAndStartDateBeforeAndStartDateAfter(ReservationStatus.APPROVED, todayPlusFive, today,  pageable);
     }
 
     /**

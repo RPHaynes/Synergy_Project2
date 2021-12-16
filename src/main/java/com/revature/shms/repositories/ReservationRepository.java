@@ -17,7 +17,7 @@ public interface ReservationRepository extends JpaRepository<Reservation,Integer
 
 	void deleteByUserReserve_UserID(int userID);
 	void deleteByReservationID(int reservationID);
-	Page<Reservation> findAllByStatusAndStartDateBefore(ReservationStatus status, Date today, Pageable pageable);
 	Page<Reservation> findAllByStatusAndStartDateBeforeAndEndDateAfter(ReservationStatus status, Date today, Date date, Pageable pageable);
 	Page<Reservation> findAllByStatus(ReservationStatus status, Pageable pageable);
+    Page<Reservation> findAllByStatusAndStartDateBeforeAndStartDateAfter(ReservationStatus approved, Date todayPlusFive, Date today, Pageable pageable);
 }
