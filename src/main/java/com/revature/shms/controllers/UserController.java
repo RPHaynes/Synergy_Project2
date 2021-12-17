@@ -19,10 +19,6 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
-    private int userID;
-    private String firstname;
-    private String lastName;
-    private String email;
 
     @GetMapping("/{userID}")
     public ResponseEntity<?> findUserById(@PathVariable int userID) {
@@ -44,18 +40,18 @@ public class UserController {
     @PutMapping("/firstName/{userID}")
     public ResponseEntity<?> updateFirstName(@PathVariable int userID,
                                         @RequestBody String firstName){
-        return ResponseEntity.ok(userService.updateFirstName(userID, firstName));
+        return ResponseEntity.ok(userService.updateFirstName(userID, firstName.substring(1,firstName.length()-1)));
     }
 
     @PutMapping("/lastName/{userID}")
     public ResponseEntity<?> updateLastName(@PathVariable int userID,
                                         @RequestBody String lastName){
-        return ResponseEntity.ok(userService.updateLastName(userID, lastName));
+        return ResponseEntity.ok(userService.updateLastName(userID, lastName.substring(1,lastName.length()-1)));
     }
 
     @PutMapping("/email/{userID}")
     public ResponseEntity<?> updateEmail(@PathVariable int userID,
                                             @RequestBody String email){
-        return ResponseEntity.ok(userService.updateEmail(userID, email));
+        return ResponseEntity.ok(userService.updateEmail(userID, email.substring(1,email.length()-1)));
     }
 }

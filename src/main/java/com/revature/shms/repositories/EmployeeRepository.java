@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
     Page<Employee> findAllByOrderByEmployeeType(Pageable pageable);
 	Page<Employee> findByEmployeeType(EmployeeType employeeType,Pageable pageable);
-
+    Page<Employee> findAll(Pageable pageable);
     Optional<Employee> findByUsername(String username);
 	Optional<Employee> findByEmployeeID(int employeeID);
 }
