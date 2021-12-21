@@ -56,7 +56,8 @@ public class RoomServiceTest {
 		room.setRoomNumber(roomNumber);
 		room.setOccupied(isOccupied);
 		when(roomRepository.findByRoomNumber(anyInt())).thenReturn(java.util.Optional.of(room));
-		assertEquals(room, roomService.setOccupationStatus(roomNumber, isOccupied));
+		when(roomRepository.save(any())).thenReturn(room);
+		assertFalse(roomService.setOccupationStatus(roomNumber, false).isOccupied());
 	}
 
 	@Test
@@ -65,6 +66,7 @@ public class RoomServiceTest {
 		Room room = new Room();
 		room.setRoomNumber(roomNumber);
 		when(roomRepository.findByRoomNumber(anyInt())).thenReturn(java.util.Optional.of(room));
+		when(roomRepository.save(any())).thenReturn(room);
 		assertTrue(roomService.Occupied(roomNumber).isOccupied());
 	}
 	@Test
@@ -73,6 +75,7 @@ public class RoomServiceTest {
 		Room room = new Room();
 		room.setRoomNumber(roomNumber);
 		when(roomRepository.findByRoomNumber(anyInt())).thenReturn(java.util.Optional.of(room));
+		when(roomRepository.save(any())).thenReturn(room);
 		assertFalse(roomService.notOccupied(roomNumber).isOccupied());
 	}
 
