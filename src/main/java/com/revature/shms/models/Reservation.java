@@ -1,7 +1,6 @@
 package com.revature.shms.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.revature.shms.enums.CleaningStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,6 @@ import com.revature.shms.enums.*;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Reservation model

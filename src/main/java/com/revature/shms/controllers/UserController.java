@@ -33,8 +33,11 @@ public class UserController {
     @PutMapping("/{userID}")
     public ResponseEntity<?> updatePassword(@PathVariable int userID,
                                             @RequestBody HashMap<String, String> password) {
-        return ResponseEntity.ok(userService.updatePassword(userID, password.get("old"),
-                password.get("new")));
+		boolean user = userService.updatePassword(userID, password.get("old"), password.get("new"));
+		if (user)
+        	return ResponseEntity.ok("Password True");
+		else
+			return ResponseEntity.badRequest().build();
     }
 
     @PutMapping("/firstName/{userID}")

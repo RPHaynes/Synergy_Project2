@@ -35,7 +35,6 @@ public class  ReservationService {
     UserRepository userRepository;
 
     // -- Create/Delete
-
     /**
      * This creates or saves a reservation
      *
@@ -77,8 +76,6 @@ public class  ReservationService {
         return reservationRepository.save(reservation);
     }
 
-
-
     /**
      * Sets the accommodations of the given reservation to the given accommodations string.
      *
@@ -94,10 +91,8 @@ public class  ReservationService {
     }
 
     // -- Change
-
     /**
      * This toggles the reservation status for employees or users that cancel a reservation
-     *
      * @param reservationID of reservation that will be changed.
      * @param status        that will be used to update
      * @return Reservation object that was updated
@@ -111,7 +106,6 @@ public class  ReservationService {
 
     /**
      * This toggles the date
-     *
      * @param reservationID of reservation that will be changed.
      * @param startDate     start date that will be updated
      * @param endDate       end date that will be updated
@@ -131,7 +125,6 @@ public class  ReservationService {
 
     /**
      * Get all reservations
-     *
      * @return a list of reservations
      */
     public List<Reservation> findAll() {
@@ -140,7 +133,6 @@ public class  ReservationService {
 
     /**
      * Get a reservation with a userId
-     *
      * @param userID of user that created a reservation.
      * @return Reservation object of the specific user.
      * @throws NotFound exception if reservation not found.
@@ -151,7 +143,6 @@ public class  ReservationService {
 
     /**
      * Get a reservation with a reservation Id
-     *
      * @param reservationId specific to a reservation
      * @return Reservation object of the reservation id.
      * @throws NotFound exception id reservation not found.
@@ -181,7 +172,7 @@ public class  ReservationService {
     }
 
     /**
-     *This method gets all methos that are approved and that have a start date that is less than five days from today
+     *This method gets all reservations that are approved and that have a start date that is less than five days from today
      * @param pageable of the request
      * @return A page of the reservations
      * @throws ParseException if the date is in wrong format
@@ -197,7 +188,7 @@ public class  ReservationService {
     }
 
     /**
-     *This method gets all methods that are approved and that have a start date before today and a end date after today
+     *This method gets all reservations that are approved and that have a start date before today and an end date after today
      * @param pageable of the request
      * @return A page of the reservations
      * @throws ParseException if the date is in wrong format

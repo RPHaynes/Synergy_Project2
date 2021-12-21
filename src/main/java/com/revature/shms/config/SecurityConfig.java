@@ -1,4 +1,5 @@
 package com.revature.shms.config;
+import com.revature.shms.models.User;
 import com.revature.shms.services.MyUserDetailsService;
 import com.revature.shms.util.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +46,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			cors.setAllowedHeaders(Arrays.asList("*"));
 			return cors;
 		});
-		http.authorizeRequests()
-			.antMatchers("/employee/*").hasAnyAuthority("EMPLOYEE","MANAGER").and().authorizeRequests()
-			.antMatchers("/user/*").hasAuthority("USER");
+		http.cors().and().authorizeRequests()
+			.antMatchers("/user/*").hasAuthority("USER")
+			.antMatchers("/reservations/username","/reservations/save").hasAnyAuthority("EMPLOYEE","MANAGER", "USER")
+			.antMatchers("/reservations/*","/employee/*","/rooms/*").hasAnyAuthority("EMPLOYEE","MANAGER");
 
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/authenticate","/users","/employee", "/u")

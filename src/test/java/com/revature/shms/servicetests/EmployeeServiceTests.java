@@ -4,7 +4,6 @@ import com.revature.shms.enums.EmployeeType;
 import com.revature.shms.models.Employee;
 import com.revature.shms.repositories.EmployeeRepository;
 import com.revature.shms.repositories.RoomRepository;
-import com.revature.shms.services.CleaningService;
 import com.revature.shms.services.EmployeeService;
 import com.revature.shms.services.RoomService;
 import com.revature.shms.services.UserService;
@@ -32,7 +31,6 @@ import static org.mockito.Mockito.when;
 public class EmployeeServiceTests {
 
 	@Mock EmployeeRepository employeeRepository;
-	@Mock CleaningService cleaningService;
 	@InjectMocks EmployeeService employeeService;
 
 	@Test

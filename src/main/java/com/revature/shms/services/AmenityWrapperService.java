@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @NoArgsConstructor
@@ -39,7 +40,8 @@ public class AmenityWrapperService {
 	 * Generates all AmenityWrappers with 0 price
 	 */
 	public void GenerateAllAmenityWrappers(){
-		Arrays.stream(Amenities.values()).forEach(amenities -> amenityWrapperRepository.save(new AmenityWrapper(amenities,0)));
+		AtomicInteger i = new AtomicInteger();
+		Arrays.stream(Amenities.values()).forEach(amenities -> amenityWrapperRepository.save(new AmenityWrapper(i.getAndIncrement(),amenities,0)));
 	}
 
 	// -- Gets
@@ -48,8 +50,8 @@ public class AmenityWrapperService {
 	 * @param amenity amenity to look for.
 	 * @return AmenityWrapper the amenity wrapper for the given amenity.
 	 */
-	public AmenityWrapper getAmenityWrapper(Amenities amenity){
-		return amenityWrapperRepository.getById(amenity);
+	public AmenityWrapper getAmenityWrapper(int amenity){
+		return amenityWrapperRepository.findById(amenity).get();
 	}
 
 	/**
@@ -57,8 +59,8 @@ public class AmenityWrapperService {
 	 * @param amenity amenity to look for.
 	 * @return double price of the given ammenity.
 	 */
-	public Double getAmenityPrice(Amenities amenity) {
-		return amenityWrapperRepository.getById(amenity).getPriceWeight();
+	public Double getAmenityPrice(int amenity) {
+		return amenityWrapperRepository.findById(amenity).get().getPriceWeight();
 	}
 
 	/**
@@ -79,5 +81,6 @@ public class AmenityWrapperService {
 	public Page<AmenityWrapper> findAllAmenities(Pageable pageable){
 		return amenityWrapperRepository.findAll(pageable);
 	}
+
 
 }

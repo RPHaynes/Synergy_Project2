@@ -43,16 +43,24 @@ public class AmenityWrapperServiceTest {
 	// -- Gets
 	@Test
 	public void getAmenityWrapperTest(){
-		AmenityWrapper wrapper = new AmenityWrapper(Amenities.SMALL_KITCHEN, 100);
-		when(repo.getById(any())).thenReturn(wrapper);
-		assertEquals(wrapper, service.getAmenityWrapper(Amenities.SMALL_KITCHEN));
+		AmenityWrapper wrapper = new AmenityWrapper(1, Amenities.SMALL_KITCHEN, 100);
+		AmenityWrapper wrapper2 = new AmenityWrapper(1, Amenities.FULL_KITCHEN, 50);
+		when(repo.findById(anyInt())).thenReturn(java.util.Optional.of(wrapper2));
+		assertNotEquals(wrapper, service.getAmenityWrapper(1));
+
+		when(repo.findById(anyInt())).thenReturn(java.util.Optional.of(wrapper));
+		assertEquals(wrapper, service.getAmenityWrapper(1));
 	}
 
 	@Test
 	public void getAmenityPriceTest(){
-		AmenityWrapper wrapper = new AmenityWrapper(Amenities.SMALL_KITCHEN, 100);
-		when(repo.getById(any())).thenReturn(wrapper);
-		assertEquals(100, service.getAmenityPrice(Amenities.SMALL_KITCHEN));
+		AmenityWrapper wrapper = new AmenityWrapper(1, Amenities.SMALL_KITCHEN, 100);
+		AmenityWrapper wrapper2 = new AmenityWrapper(1, Amenities.FULL_KITCHEN, 50);
+		when(repo.findById(anyInt())).thenReturn(java.util.Optional.of(wrapper2));
+		assertNotEquals(100, service.getAmenityPrice(1));
+
+		when(repo.findById(anyInt())).thenReturn(java.util.Optional.of(wrapper));
+		assertEquals(100, service.getAmenityPrice(1));
 	}
 
 	@Test

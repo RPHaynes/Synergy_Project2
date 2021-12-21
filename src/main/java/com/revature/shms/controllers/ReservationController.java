@@ -38,7 +38,7 @@ public class ReservationController {
            return ResponseEntity.ok(reservationService.changeStatusOfReservation(reservationID, status));
     }
 
-    @PostMapping("/save")
+    @PostMapping
     public ResponseEntity<?> createNewReservation(@RequestBody Reservation reservation) throws NotFound {
         return  ResponseEntity.ok(reservationService.setReservation(reservation));
     }
@@ -48,7 +48,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.changeDateOfReservation(reservationID, startDate, endDate));
     }
 
-    @PostMapping("/username")
+    @GetMapping("/username")
     public Page<Reservation> getReservationsByUsername(@RequestParam("username") String username, @RequestParam("pageNumber") int pageNumber, @RequestParam("pageSize") int pageSize, @RequestParam("sortBy") String sortBy) {
         return reservationService.getAllReservationsOfUser(username, PageRequest.of(pageNumber, pageSize, Sort.by(sortBy)));
     }

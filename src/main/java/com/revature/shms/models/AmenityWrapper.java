@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -15,9 +16,15 @@ import javax.persistence.*;
 @Setter
 public class AmenityWrapper {
 	@Id
+	int id;
 	@Enumerated
-	@Column(unique = true,nullable = false)
+	@Column(unique = true)
 	Amenities amenity;
-	@Column(nullable = false)
+	@Column
 	double priceWeight;
+
+	public AmenityWrapper(Amenities amenity, double priceWeight) {
+		this.amenity = amenity;
+		this.priceWeight = priceWeight;
+	}
 }

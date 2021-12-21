@@ -1,5 +1,6 @@
 package com.revature.shms.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.revature.shms.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,14 +27,12 @@ public class Room {
 	@OneToOne(cascade = CascadeType.ALL)
 	User CurrentUser;
 
-	@Column(nullable = false)
-	CleaningStatus status;
+
 	@Column(nullable = false)
 	boolean isOccupied;
-	@Column(nullable = false)
-	WorkStatus workStatus;
 
-	@OneToMany(cascade = CascadeType.ALL)
+
+	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	List<AmenityWrapper> amenitiesList;
 
 	/*

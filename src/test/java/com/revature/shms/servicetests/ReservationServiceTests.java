@@ -5,6 +5,7 @@ import com.revature.shms.models.Reservation;
 import com.revature.shms.models.User;
 import com.revature.shms.repositories.ReservationRepository;
 import com.revature.shms.services.ReservationService;
+import com.revature.shms.repositories.UserRepository;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,13 +17,14 @@ import org.springframework.data.domain.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -30,8 +32,11 @@ import static org.mockito.Mockito.*;
 public class ReservationServiceTests {
 	@InjectMocks
 	ReservationService reservationService;
+
 	@Mock
 	ReservationRepository reservationRepository;
+	@Mock
+	UserRepository userRepository;
 
 	// -- Create/Delete
 	@Test
@@ -121,15 +126,15 @@ public class ReservationServiceTests {
 
 	@Test
 	public void findReservationByUserID() throws NotFound {
-		int reservationID = 0;
+		int reservationID = 1;
 		Reservation reservation = new Reservation();
 		reservation.setReservationID(reservationID);
 		User user = new User();
 		reservation.setUserReserve(user);
 		reservation.setUserReserve(user);
 		List<Reservation> reservations1 = new ArrayList<>();
-		reservations1.add(new Reservation());
-		reservations1.add(new Reservation());
+		reservations1.add(reservation);
+		reservations1.add(reservation);
 		Page<Reservation> reservations = new PageImpl<>(reservations1);
 		when(reservationRepository.findAllByUserReserve_UserID(anyInt(), any())).thenReturn(reservations);
 		assertEquals(reservationID, reservationService.findReservationByUserID( reservationID, PageRequest.of(0, 10, Sort.by(String.valueOf(reservationID)))).getContent().get(1).getReservationID());
@@ -144,12 +149,117 @@ public class ReservationServiceTests {
 		assertEquals(reservationID, reservationService.findReservationByReservationID(reservationID).getReservationID());
 	}
 
+	// -- Gets
+	@Test
+	public void getAllReservationsOfUserTest() {
+		int reservationID = 1;
+		int userID = 1;
+		String username = "jlecl";
+		Reservation reservation = new Reservation();
+		reservation.setReservationID(reservationID);
+
+		Reservation reservationWrong = new Reservation();
+		reservationWrong.setReservationID(reservationID + 1);
+
+		User user = new User();
+		user.setUserID(userID);
+		user.setUsername(username);
+
+		User wrongUser = new User();
+		wrongUser.setUserID(userID + 1);
+		wrongUser.setUsername("wrong");
+
+		reservation.setUserReserve(user);
+
+		reservationWrong.setUserReserve(wrongUser);
+
+		List<Reservation> reservations1 = new ArrayList<>();
+		reservations1.add(reservation);
+		reservations1.add(reservation);
+
+		List<Reservation> reservations1Wrong = new ArrayList<>();
+		reservations1Wrong.add(reservationWrong);
+		reservations1Wrong.add(reservationWrong);
+
+		Page<Reservation> reservations = new PageImpl<>(reservations1);
+		Page<Reservation> reservationsWrong = new PageImpl<>(reservations1Wrong);
+
+		when(reservationRepository.findAllByUserReserve_UserID(anyInt(), any())).thenReturn(reservationsWrong);
+		when(userRepository.findByUsername(any())).thenReturn(java.util.Optional.of(wrongUser));
+		assertNotEquals(reservationID, reservationService.getAllReservationsOfUser( username, PageRequest.of(0, 10, Sort.by(String.valueOf(reservationID)))).getContent().get(1).getReservationID());
+
+		when(reservationRepository.findAllByUserReserve_UserID(anyInt(), any())).thenReturn(reservations);
+		when(userRepository.findByUsername(any())).thenReturn(java.util.Optional.of(user));
+		assertEquals(reservationID, reservationService.getAllReservationsOfUser( username, PageRequest.of(0, 10, Sort.by(String.valueOf(reservationID)))).getContent().get(1).getReservationID());
+	}
+
+	@Test
+	public void getAllPendingStatusTest() {
+		Reservation reservation = new Reservation();
+		reservation.setStatus(ReservationStatus.PENDING);
+
+		List<Reservation> reservations1 = new ArrayList<>();
+		reservations1.add(reservation);
+		reservations1.add(reservation);
+
+		Page<Reservation> reservations = new PageImpl<>(reservations1);
+
+		when(reservationRepository.findAllByStatus(any(),any())).thenReturn(reservations);
+		assertEquals(reservations, reservationService.getAllPendingStatus(PageRequest.of(0, 10, Sort.by(String.valueOf(reservations)))));
+	}
+
+	@Test
+	public void getAllApprovedAndStartDateTest() throws ParseException {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		LocalDateTime now = LocalDateTime.now();
+		Date todayPlusThree = new SimpleDateFormat("yyyy/MM/dd").parse(dtf.format(now.plusDays(3)));
+
+		Reservation reservation = new Reservation();
+		reservation.setStatus(ReservationStatus.APPROVED);
+		reservation.setStartDate(todayPlusThree);
+
+		List<Reservation> reservations1 = new ArrayList<>();
+		reservations1.add(reservation);
+		reservations1.add(reservation);
+
+		Page<Reservation> reservations = new PageImpl<>(reservations1);
+
+		when(reservationRepository.findAllByStatusAndStartDateBeforeAndStartDateAfter(any(),any(),any(), any())).thenReturn(reservations);
+		assertEquals(reservations, reservationService.getAllApprovedAndStartDate(PageRequest.of(0, 10, Sort.by(String.valueOf(reservations)))));
+	}
+
+	@Test
+	public void getAllApprovedAndStartandEndTest() throws ParseException {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		LocalDateTime now = LocalDateTime.now();
+		Date todayPlusThree = new SimpleDateFormat("yyyy/MM/dd").parse(dtf.format(now.plusDays(3)));
+		Date todayMinusThree = new SimpleDateFormat("yyyy/MM/dd").parse(dtf.format(now.minusDays(3)));
+
+		Reservation reservation = new Reservation();
+		reservation.setStatus(ReservationStatus.APPROVED);
+		reservation.setStartDate(todayMinusThree);
+		reservation.setEndDate(todayPlusThree);
+
+		List<Reservation> reservations1 = new ArrayList<>();
+		reservations1.add(reservation);
+		reservations1.add(reservation);
+
+		Page<Reservation> reservations = new PageImpl<>(reservations1);
+
+		when(reservationRepository.findAllByStatusAndStartDateBeforeAndEndDateAfter(any(),any(),any(), any())).thenReturn(reservations);
+		assertEquals(reservations, reservationService.getAllApprovedAndStartandEnd(PageRequest.of(0, 10, Sort.by(String.valueOf(reservations)))));
+	}
+
 	// -- Getter/Setters
 	@Test
 	public void gettersSetters() {
 		ReservationService reservationService = new ReservationService();
 		ReservationRepository reservationRepository = null;
 		reservationService.setReservationRepository(reservationRepository);
-		assertEquals(reservationRepository, reservationService.getReservationRepository());
+		assertNull(reservationService.getReservationRepository());
+
+		UserRepository userRepository = null;
+		reservationService.setUserRepository(userRepository);
+		assertNull(reservationService.getUserRepository());
 	}
 }

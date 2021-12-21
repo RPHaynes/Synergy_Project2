@@ -41,8 +41,12 @@ public class EmployeeController {
     public ResponseEntity<?> updatePassword(@PathVariable int employeeID,
                                             @RequestBody HashMap<String, String> password)
     {
-        return ResponseEntity.ok(employeeService.updatePassword(employeeID, password.get("old"),
-                password.get("new")));
+        boolean user = employeeService.updatePassword(employeeID, password.get("old"),
+                password.get("new"));
+		if (user)
+			return ResponseEntity.ok("Password True");
+		else
+			return ResponseEntity.badRequest().build();
     }
 
     @PutMapping("/firstName/{employeeID}")
